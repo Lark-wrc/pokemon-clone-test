@@ -1,0 +1,20 @@
+#BlueJ class context
+comment0.params=
+comment0.target=Command()
+comment1.params=s
+comment1.target=boolean\ legalFirst(java.lang.String[])
+comment2.params=v
+comment2.target=boolean\ legalRoomCommand(java.lang.String)
+comment3.params=p
+comment3.target=Player\ process(Player)
+comment4.params=p
+comment4.target=Player\ go(Player)
+comment5.params=p
+comment5.target=void\ view(Player)
+comment6.params=c
+comment6.target=void\ check(Room)
+comment7.params=c
+comment7.target=void\ look(Room)
+comment8.params=c
+comment8.target=void\ play(Room)
+numComments=9

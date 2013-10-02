@@ -1,0 +1,16 @@
+#BlueJ class context
+comment0.params=
+comment0.target=Input()
+comment0.text=\n\ Constructor,\ unused.\n
+comment1.params=i
+comment1.target=int\ genBatCommands(java.lang.String)
+comment1.text=\n\ This\ method\ is\ before\ commands\ in\ battle\ are\ processed.\ It\ contains\ \n\ checks\ for\ commands\ that\ aren't\ call\ specific,\ such\ as\ quit,\ and\ print\n\ info\ on\ a\ pokemon.\ If\ a\ command\ matches,\ the\ method\ returns\ which\ on\ as\n\ a\ negative\ value\ and\ ends\ the\ calling\ method\ with\ a\ return\ of\ the\ value\ \n\ this\ method\ returns.\ Then\ the\ general\ command\ is\ the\ one\ processed.\n\ \n\ @param\ i\ The\ input\ from\ the\ user.\n\ @return\ int\ The\ value\ of\ the\ command\ matched,\ or\ -1\ for\ unrecongized.\n
+comment2.params=
+comment2.target=int\ battleOne()
+comment2.text=\n\ This\ method\ is\ called\ for\ a\ top\ level\ battle\ commands.\ It\ returns\ an\ \n\ int\ value\ to\ be\ processed,\ different\ depending\ on\ which\ command\ was\ \n\ entered.\ It\ calls\ to\ genBatCommands\ for\ general\ commands\ before\ \n\ processing\ it's\ own.\n\ fight\ 0,\ item\ 1,\ pkmn\ 2,\ run\ 3.\n\ \n\ @return\ The\ int\ associated\ with\ legal\ commands,\ else\ -1\ for\ unknown.\n
+comment3.params=moves
+comment3.target=int\ playerMove(Move[])
+comment3.text=\n\ This\ method\ prompts\ the\ user\ with\ the\ moves\ their\ pokemon\ can\ use,\ \n\ then\ returns\ the\ selection.\ It\ prompts\ with\ the\ moves\ in\ the\ array\n\ parameter\ supplied,\ gets\ input,\ checks\ against\ genBatCommands,\ then\n\ returns\ the\ index\ of\ the\ move\ that\ matches\ the\ players\ typed\ input.\n\ \n\ @param\ moves\ An\ array\ of\ the\ pokemon's\ current\ moves.\n\ @return\ int\ the\ index\ of\ the\ move\ selected.\n
+comment4.params=
+comment4.target=java.lang.String[]\ parser()
+numComments=5

@@ -1,0 +1,20 @@
+#BlueJ class context
+comment0.params=
+comment0.target=Cal()
+comment0.text=\n\ Constructor\ for\ the\ calc\ object.\ It\ builds\ the\ statEffects\ hashmap\n\ and\ the\ hitStatEffects\ hashmap\ which\ are\ used\ in\ method\ of\ the\ class.\n
+comment1.params=lv\ atk\ def\ base
+comment1.target=int\ damCal(int,\ int,\ int,\ int)
+comment1.text=\n\ This\ method\ calculates\ damage\ of\ a\ pokemon\ using\ a\ damaging\ move.\ \n\ It\ converts\ the\ provided\ ints\ to\ doubles\ for\ most\ of\ the\ calculation,\ as\n\ to\ get\ results\ that\ dont\ end\ up\ rounding\ down\ to\ zero.\n\ \n\ @param\ lv\ Level\ of\ the\ attacking\ pokemon.\n\ @param\ atk\ Attack\ stat\ of\ attacking\ pokemon.\n\ @param\ def\ Defense\ stat\ of\ defending\ pokemon.\n\ @param\ base\ the\ power\ of\ the\ move\ the\ attacker\ is\ using.\n\ @return\ int\ damage\ calculated\ by\ the\ method.\n
+comment2.params=count\ amnt\ stat
+comment2.target=int\ statRecal(int,\ int,\ int)
+comment2.text=\n\ This\ method\ recalcuates\ a\ pokemon's\ stat,\ after\ it\ has\ been\ affected\ by\n\ a\ stat\ effecting\ move.\ It\ is\ the\ 'damage'\ of\ one\ of\ those\ moves.\ It\ \n\ does\ its\ internal\ calculations\ with\ doubles,\ so\ things\ dont\ round\ out\ to\n\ zero.\n\ note,\ moves\ that\ increase\ stats\ are\ also\ done\ here.\ the\ increase\ is\ \n\ damage.\n\ \n\ @param\ count\ the\ level\ of\ stat\ damage\ the\ pokemon\ being\ effected\ is\ at.\n\ @param\ amnt\ the\ amount\ of\ stat\ damage\ done,\ in\ level\ difference.\n\ @param\ stat\ stat\ value\ that\ is\ being\ modified.\n\ @return\ int\ the\ new\ stat\ value.\n
+comment3.params=count\ amnt\ stat
+comment3.target=double\ hitStatRecal(int,\ int,\ double)
+comment3.text=\n\ This\ method\ recalculates\ the\ accuracy\ or\ evasion\ stat\ of\ a\ pokemon.\n\ It\ is\ the\ stat\ damage\ of\ an\ accuracy\ or\ evasion\ modifying\ move.\ It\ \n\ does\ its\ internal\ calculations\ with\ doubles,\ so\ things\ dont\ round\ out\ to\n\ zero.\n\ note,\ moves\ that\ increase\ stats\ are\ also\ done\ here.\ the\ increase\ is\ \n\ damage.\n\ \n\ @param\ count\ the\ level\ of\ stat\ damage\ the\ pokemon\ being\ effected\ is\ at.\n\ @param\ amnt\ the\ amount\ of\ stat\ damage\ done,\ in\ level\ difference.\n\ @param\ stat\ stat\ value\ that's\ being\ modified.\n\ @return\ double\ the\ new\ stat\ value.\n
+comment4.params=move\ mon\ acc\ eva
+comment4.target=boolean\ hitMiss(Move,\ int,\ double[],\ double[])
+comment4.text=\n\ This\ method\ calculated\ the\ miss\ chance\ of\ a\ pokemon's\ move,\ and\ then\n\ generates\ a\ random\ number\ to\ check\ against\ it.\ Weither\ or\ not\ the\ move\n\ hits\ is\ returned\ as\ a\ boolean.\ \n\ \n\ @param\ move\ the\ move\ being\ used.\n\ @param\ mon\ A\ flag\ for\ the\ pokemon\ that's\ hit\ miss\ is\ being\ calculated.\ It's\ used\ in\ getting\ values\ from\ the\ two\ arrays.\n\ @param\ acc\ the\ accuracy\ array\ of\ the\ battle.\n\ @param\ eva\ the\ evasion\ array\ of\ the\ battle.\n\ @return\ boolean\ true\ if\ the\ move\ hits,\ or\ false\ if\ it\ doesn't.\n
+comment5.params=s1\ s2\ c
+comment5.target=boolean\ running(int,\ int,\ int)
+comment5.text=\n\ method\ that\ calculates\ the\ odds\ of\ running\ for\ the\ players\ pokemon,\ and\n\ returns\ a\ boolean\ for\ weither\ of\ not\ it\ is\ successful.\ \n\ \n\ @param\ s1\ speed\ of\ the\ running\ pokemon.\n\ @param\ s2\ speed\ of\ the\ opponent\ pokemon.\n\ @param\ c\ the\ count\ of\ run\ attempts.\n\ @return\ boolean\ true\ if\ the\ pokemon\ escapes,\ false\ if\ not.\n
+numComments=6

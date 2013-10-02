@@ -1,0 +1,27 @@
+
+/**
+ * Write a description of class DamnCal here.
+ * 
+ * @author (your name) 
+ * @version (a version number or a date)
+ * 
+ * 
+ * This class is for calculating damage from a battle class.
+ */
+public class DamnCal
+{
+    public DamnCal() {
+        
+        
+    }
+    
+    public int damageCalc(int lv, int atk, int def, int base) {
+        
+        int a = (2 * lv + 10) / 250;
+        int b = atk/def;
+        int c = base + 2;
+        
+        int d = a*b*c;
+        return d;
+    }
+}

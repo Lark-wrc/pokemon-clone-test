@@ -1,0 +1,40 @@
+import java.util.*;
+
+/**
+ * 
+ */
+
+public class Item {
+    
+    String name;
+    String description;
+    boolean takable;
+    boolean oneUse;
+    
+    public Item(String n, String d, boolean t, boolean o) {
+        
+        name = n;
+		description = d;
+		takable = t;
+		oneUse = o;
+    }
+    
+    public Item(String n, String d, boolean t) {
+        
+        name = n;
+		description = d;
+		takable = t;
+		oneUse = o;
+    }
+
+	//accessor
+	public String name() {
+		
+		return name;
+	}
+	
+	public String description() {
+	
+		return description;
+	}
+}

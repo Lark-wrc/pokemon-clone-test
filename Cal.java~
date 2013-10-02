@@ -1,0 +1,208 @@
+import java.util.*;
+
+/**
+ * This class is used for calculating the many formulas used in the game. All 
+ * it does is these calculations, most of which are needed in battle.
+ * 
+ * ToDo:
+ * add modifier calcs to damnCal
+ * 
+ * @author Bill Clark
+ * @version 0.1
+ */
+public class Cal
+{
+    /** An hashmap containing the number used to modify a stat in stat
+     *	 modding moves. hashed level, amount to use.*/
+    private HashMap<Integer, Double> statEffects = new HashMap<Integer, Double>();
+    
+    /** An hashmap containing the number used to modify a hit stat in stat
+     *	 modding moves. hashed level, amount to use.*/
+    HashMap<Integer, Double> hitStatEffects = new HashMap<Integer, Double>();
+    
+    double[][] typeAdv = 
+    {
+        {1, 1, 1, 1, .5, 1, 0, .5, 1, 1, 1, 1, 1, 1, 1, 1},
+        {2, 1, .5, .5, 1, 2, .5, 0, 2, 1, 1, 1, 1, .5, 2, 1, 2},
+        {1, 2, 1, 1, 1, .5, 2, 1, .5, 1, 1, 2, .5, 1, 1, 1, 1},
+        {1, 1, 1, .5, .5, .5, 1, .5, 0, 1, 1, 2, 1, 1, 1, 1, 1},
+        {1, 1, 0, 2, 1, 2, .5, 1, 2, 2, 1, .5, 2, 1, 1, 1, 1},
+        {1, .5, .5, .5, 1, 1, 1, .5, .5, .5, 1, 2, 1, 2, 1, 1, 2},
+        {0, 1, 1, 1, 1, 1, 1, 2, .5, 1, 1, 1, 1, 2, 1, 1, .5},
+        {1, 1, 1, 1, 1, 2, 1, 1, .5, .5, .5, 1, .5, 1, 2, 1, 1,},
+        {1, 1, 1, 1, 1, .5, 2, 1, 2, .5, .5, 2, 1, 1, 2, .5, 1},
+        {1, 1, 1, 1, 2, 2, 1, 1, 1, 2, .5, .5, 1, 1, 1, .5, 1},
+        {1, 1, .5, .5, 2, 2, .5, 1, .5, .5, 2, .5, 1, 1, 1, .5, 1},
+        {1, 1, 2, 1, 0, 1, 1, 1, 1, 1, 2, .5, .5, 1, 1, .5, 1},
+        {1, 2, 1, 2, 1, 1, 1, 1, .5, 1, 1, 1, 1, .5, 1, 1, 0},
+        {1, 1, 2, 1, 2, 1, 1, 1, .5, .5, .5, 2, 1, 1, .5, 2, 1},
+        {1, 1, 1, 1, 1, 1, 1, 1, .5, 1, 1, 1, 1, 1, 1, 2, 1},
+        {1, .5, 1, 1, 1, 1, 1, 2, .5, 1, 1, 1, 1, 2, 1, 1, .5}
+    };
+    
+    /**
+     * Constructor for the calc object. It builds the statEffects hashmap
+     * and the hitStatEffects hashmap which are used in method of the class.
+     */
+    public Cal() {
+        double a = 2.0/8.0;
+        statEffects.put(-6, .25);
+        a = 2.0/7.8;
+        statEffects.put(-5, .29);
+        a = 2.0/6.0;
+        statEffects.put(-4, .33);
+        a = 2.0/5.0;
+        statEffects.put(-3, .40);
+        a = 2.0/4.0;
+        statEffects.put(-2, .50);
+        a = 2.0/3.0;
+        statEffects.put(-1, .67);
+        
+        statEffects.put(0, 1.0);
+        statEffects.put(1, 1.5);
+        statEffects.put(2, 2.0);
+        statEffects.put(3, 2.5);
+        statEffects.put(4, 3.0);
+        statEffects.put(5, 3.5);
+        statEffects.put(6, 4.0);
+        
+        hitStatEffects.put(-6, .33);
+        hitStatEffects.put(-5, .38);
+        hitStatEffects.put(-4, .43);
+        hitStatEffects.put(-3, .40);
+        hitStatEffects.put(-2, .50);
+        hitStatEffects.put(-1, .67);
+        
+        hitStatEffects.put(0, 1.0);
+        hitStatEffects.put(1, 1.33);
+        hitStatEffects.put(2, 1.67);
+        hitStatEffects.put(3, 2.0);
+        hitStatEffects.put(4, 2.33);
+        hitStatEffects.put(5, 2.67);
+        hitStatEffects.put(6, 3.0);
+    }
+    
+    
+    
+    //Functional Methods
+    
+    /**
+     * This method calculates damage of a pokemon using a damaging move. 
+     * It converts the provided ints to doubles for most of the calculation, as
+     * to get results that dont end up rounding down to zero.
+     * 
+     * @param lv Level of the attacking pokemon.
+     * @param atk Attack stat of attacking pokemon.
+     * @param def Defense stat of defending pokemon.
+     * @param base the power of the move the attacker is using.
+     * @return int damage calculated by the method.
+     */
+    public int damCal(int lv, int atk, int def, int base) {
+        
+        double a = (double)(2 * lv + 10) / (double)250;
+        double b = (double)atk/(double)def;
+        double c = base + 2;
+        
+        int d = (int)(a*b*c);
+        return d;
+    }
+    
+    /**
+     * This method recalcuates a pokemon's stat, after it has been affected by
+     * a stat effecting move. It is the 'damage' of one of those moves. It 
+     * does its internal calculations with doubles, so things dont round out to
+     * zero.
+     * note, moves that increase stats are also done here. the increase is 
+     * damage.
+     * 
+     * @param count the level of stat damage the pokemon being effected is at.
+     * @param amnt the amount of stat damage done, in level difference.
+     * @param stat stat value that is being modified.
+     * @return int the new stat value.
+     */
+    public int statRecal(int count, int amnt, int stat) {
+        
+        stat = (int)((double)stat / statEffects.get(count));
+        count = count + amnt;
+        stat = (int)((double)stat * statEffects.get(count));
+        
+        return stat;
+    }
+    
+    /**
+     * This method recalculates the accuracy or evasion stat of a pokemon.
+     * It is the stat damage of an accuracy or evasion modifying move. It 
+     * does its internal calculations with doubles, so things dont round out to
+     * zero.
+     * note, moves that increase stats are also done here. the increase is 
+     * damage.
+     * 
+     * @param count the level of stat damage the pokemon being effected is at.
+     * @param amnt the amount of stat damage done, in level difference.
+     * @param stat stat value that's being modified.
+     * @return double the new stat value.
+     */
+    public double hitStatRecal(int count, int amnt, double stat) {
+        
+        stat = (int)((double)stat / hitStatEffects.get(count));
+        count = count + amnt;
+        stat = (int)((double)stat * hitStatEffects.get(count));
+        
+        return stat;
+    }
+    
+    /**
+     * This method calculated the miss chance of a pokemon's move, and then
+     * generates a random number to check against it. Weither or not the move
+     * hits is returned as a boolean. 
+     * 
+     * @param move the move being used.
+     * @param mon A flag for the pokemon that's hit miss is being calculated. It's used in getting values from the two arrays.
+     * @param acc the accuracy array of the battle.
+     * @param eva the evasion array of the battle.
+     * @return boolean true if the move hits, or false if it doesn't.
+     */
+    public boolean hitMiss(Move move, int mon, double[] acc, double[] eva) {
+        
+        int roll;
+        Random rand = new Random();
+        boolean ret = false;
+        
+        if(mon == 0)
+        {
+            int prop = (int)(move.getAcc() * (acc[0] / eva[1]));
+            roll = rand.nextInt(100) + 1;
+            if(prop >= roll) ret = true;
+        }
+        else
+        {
+            int prop = (int)(move.getAcc() * (acc[1] / eva[0]));
+            roll = rand.nextInt(100) + 1;
+            if(prop >= roll) ret = true;
+        }
+        
+        return ret;
+    }
+    
+    /**
+     * method that calculates the odds of running for the players pokemon, and
+     * returns a boolean for weither of not it is successful. 
+     * 
+     * @param s1 speed of the running pokemon.
+     * @param s2 speed of the opponent pokemon.
+     * @param c the count of run attempts.
+     * @return boolean true if the pokemon escapes, false if not.
+     */
+    public boolean running(int s1, int s2, int c) {
+        
+        double b = (double)s2 / 4.0;
+        double one = (((double)s1 * 32.0) / b) + 32.0 * (double)c;
+        
+        if(one > 255.0) return true;
+        
+        Random rand = new Random();
+        if (rand.nextInt(256) < one) return true;
+        return false;
+        
+    }
+}

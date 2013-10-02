@@ -1,0 +1,514 @@
+import java.util.*;
+
+
+/**
+ * The battle class can be called between any two provided pokemon objects. It
+ * will orchestrate a battle between the two, and export changes back to the
+ * trainer's pokemon. It can be inported anywhere, as it creates all it tools.
+ * 
+ * Currently functionality:
+ * Pokemon importing
+ * terminal UI for battle
+ * damaging moves
+ * status effecting moves
+ * general commands
+ * faint check
+ * 
+ * Class ToDO:
+ * exporting pokemon changes back to trainer
+ * special moves (effect moves, like whirlwind)
+ * Items (to be imported from player)
+ * PKMN switching (needs a team from player)
+ * status effects
+ * 
+ * 
+ * @author Bill Clark
+ * @version 0.1
+ */
+
+public class Battle
+{
+    /** The Players pokemon object */
+    Pokemon p1;
+	
+	/** The opponent pokemon object. */
+    Pokemon p2;
+	
+	/** This boolean is used as a flag for the combat while loop. */
+    boolean finished;
+	
+	/** The input object used through out the class. */
+    Input in = new Input();
+	
+	/** Cal object used to do calculations in the class */
+    Cal cal = new Cal();
+	
+	/** The accuracy of the player and foe, respectively. */
+    double[] accc = {100, 100};
+	
+	/** The evasion of the player and foe, respectively. */
+    double[] evaa = {100, 100};
+	
+	/** A counter for what level of stat modification the players 
+	 pokemon's stats are at. Hashed move, value. */
+    HashMap<String, Integer> statCount = new HashMap<String, Integer>();
+	
+	/** A counter for what level of stat modification the foes 
+	 pokemon's stats are at. Hashed move, value. */
+    HashMap<String, Integer> foeCount = new HashMap<String, Integer>();
+	
+    /** The number of times the player has run this battle. Starts at 1*/
+	int runCount = 1;
+    
+    
+    
+    
+    /**
+     * Class constructor,It imports the pokemon, and also creates the statCount 
+     * hashmap, which is used for the amount of stat effects on a pokemon's
+     * moves. 
+     */
+    public Battle(Pokemon one, Pokemon two) {
+        
+        p1 = one;
+        p2 = two;
+        
+        statCount.put("hp", 0);
+        statCount.put("attack", 0);
+        statCount.put("defense", 0);
+        statCount.put("special attack", 0);
+        statCount.put("special defense", 0);
+        statCount.put("speed", 0);
+        statCount.put("accuracy", 0);
+        statCount.put("evasion", 0);
+
+        foeCount.put("hp", 0);
+        foeCount.put("attack", 0);
+        foeCount.put("defense", 0);
+        foeCount.put("special attack", 0);
+        foeCount.put("special defense", 0);
+        foeCount.put("speed", 0);
+        foeCount.put("accuracy", 0);
+        foeCount.put("evasion", 0);
+    }
+    
+    
+    
+    //Gameplay methods
+    
+    /**
+     * The start method starts the battle. It is the main method of the class.
+     * It contains the opening prompt, as well as the while loop that contains
+     * the battle itself. When the input events arise they are sent to input
+     * class, which will return int values for valid commands that are 
+     * processed here.
+     * With fight, this class serves as a center point. Damage, hit or miss, 
+     * and damage done are all actually done here. Input is called for the move
+     * selection, and all the calculations are down in the cal object.
+     * 
+     * 
+     * Run has a call to cal for the formula, and it's otherwise self contained.
+     */
+    public void start() {
+        int damage;
+        int damage1;
+        
+        
+        
+        //Introductory message to the battle.
+        System.out.println("A wild " + p2.getName() + " appears!");
+        System.out.println("");
+        System.out.println("I choose you, " + p1.getName() + "!");
+        System.out.println();
+        
+        //declare the battle finished flag as false.
+        finished = false;
+        
+        //begin the while loop for combat.
+        while(!finished)
+        {
+            //calls the visualHP method, for showing HP as ascii.
+            System.out.println(p1.getName() + " lv:" + p1.getLevel() + " " + visualHP(p1.getStat("hp"), p1.getCurrentHP()));
+            System.out.println(p2.getName() + " lv:" + p2.getLevel() + " " + visualHP(p2.getStat("hp"), p2.getCurrentHP()));
+            
+            
+            
+            //Player turn is handled
+            
+            //calls to the input object, which will handle user command. It will return an int value that will correlate to a specific response in the top level .
+            int b1 = in.battleOne();
+            
+            if(b1 <= -2)
+            {
+                boolean qui = genCommands(b1);
+                if(qui) finished = true;
+                continue;
+            }
+            
+            //Figure out what method to call next for handling the sublevel of the selected option. example, which move after selecting fight. 
+            switch (b1) 
+            {
+                case 0:
+                    
+                    //get the move being used, check it's type. and calculate it's damage.
+                    
+                    int z = in.playerMove(p1.getMoves());
+                    //cycles loop if it's unregisted command.
+                    if(z == -1) 
+                    {
+                        System.out.println("Unregistered command, try again.");
+                        System.out.println();
+                        continue;
+                    }
+                    //breaks loop if quit, else goes to gencommands and cycles loop.
+                    if(z <= -2) 
+                    {
+                        boolean qui = genCommands(z);
+                        if(qui) finished = true;
+                        continue;
+                    }
+                    
+                    
+                    //get the move associated with the player choice.
+                    Move[] n = p1.getMoves();
+                    Move choice = n[z];
+					
+					//check if the move has PP, else it will continue the method.
+					p1.minusPP(z);
+                    if(PP(0, z) >= 0) { int g = 5+6; }
+                    else
+                    {
+                        System.out.println();
+                        System.out.println("That move has no PP!");
+                        System.out.println();
+                        continue;
+                    }
+                    
+                    //get if the attack hits, then do damage or not.
+					boolean p1Hit = cal.hitMiss(choice, 0, accc, evaa);
+                    if(p1Hit) damage = playerDamage(choice);
+					else damage = 0;
+                    
+					
+                    boolean okay = false;
+                    boolean p2Hit= false;
+                    Move foeatk = null;
+                    damage1 = 0;
+					
+					//while loop that generates an foe attack and checks accuracy/pp
+                    while(!okay) {
+                        Random rand = new Random();
+                        Move[] m = p2.getMoves();
+                        int y = rand.nextInt(m.length);
+                        foeatk = m[y];
+						p2Hit = cal.hitMiss(foeatk, 1, accc, evaa);
+                        if(p2Hit)damage1 = foeDamage(foeatk);
+                        else damage1 = 0;
+						p2.minusPP(y);
+                        
+                        if(PP(1, y) > 0) okay = true;
+                    }
+                    
+                    
+                    
+                    
+                    //do the damage and check if pokemons fainted.
+                    if(p1.getStat("speed") >= p2.getStat("speed"))
+                    {
+                        System.out.println();
+                        System.out.println(p1.getName() + " used " + choice.getName() + "!");
+						if(p1Hit == true && damage == -1) System.out.println("But it failed!");
+                        if(p1Hit == true) p2.setHP(p2.getCurrentHP() - damage);
+                        else System.out.println("But it missed.");
+                        faint(p2);
+                        System.out.println();
+                        System.out.println(p2.getName() + " used " + foeatk.getName() + "!");
+						if(p1Hit == true && damage1 == -1) System.out.println("But it failed!");
+                        if(p2Hit == true) p1.setHP(p1.getCurrentHP() - damage1);
+                        else System.out.println("But it missed.");
+                        faint(p1);
+                        System.out.println();
+                    }
+                    else
+                    {
+                        System.out.println();
+                        System.out.println(p2.getName() + " used " + foeatk.getName() + "!");
+						if(p1Hit == true && damage1 == -1) System.out.println("But it failed!");
+                        if(p2Hit == true) p1.setHP(p1.getCurrentHP() - damage1);
+                        else System.out.println("But it missed.");
+                        faint(p1);
+                        System.out.println();
+                        System.out.println(p1.getName() + " used " + choice.getName() + "!");
+						if(p1Hit == true && damage == -1) System.out.println("But it failed!");
+                        if(p1Hit == true) p2.setHP(p2.getCurrentHP() - damage);
+                        else System.out.println("But it missed.");
+                        faint(p2);
+                        System.out.println();
+                    }
+                    
+                    break;
+                case 1:
+                    
+                    break;
+                case 2:
+                    
+                    break;
+                case 3:
+                    boolean run = cal.running(p1.getStat("speed"), p2.getStat("speed"), runCount);
+                    if(run)
+                    {
+                        System.out.println("You got away safely.");
+                        finished = true;
+                        break;
+                    }
+                    else 
+                    {
+                        System.out.println("You failed to escape!");
+                        runCount++;
+						break;
+                    }
+                    
+                    
+                case -1:
+                    System.out.println("Unregistered command, try again.");
+                    System.out.println();
+                    break;
+            }
+            
+        }
+    }
+    
+    
+    
+    /**
+     * visualHP returns a string, using the parameters given of max and current
+     * hp, that shows current health visually. it looks like [|||] .
+     * 
+     * @param hp an integer value of the pokemons health
+     * @param current an integer value of it's cureent health value.
+     * @return A string representation of the pokemon's health.
+     */
+    private String visualHP(int hp, int current) {
+        
+        String ret = "[";
+        
+        //Cycles for every hit point (max). if x is past current hit points, it adds spaces instead.
+        for(int x = 0; x < hp; x++)
+        {
+            if(x <= current) ret = ret + "|";
+            else ret = ret + " ";
+        }
+        
+        ret = ret + "]";
+        return ret;
+    }
+    
+    /**
+     * playerDamage is a subclass of start, which takes the move selected
+     * in start and returns the damage value. It is basically shortening the
+     * start class. It calls a method from the cal class with various 
+     * parameters depending on the type of move supplied by the user. 
+     * it's seperated from the start class only due to the fact it's a rather
+     * static batch of statements.
+     * 
+	 * 
+     * @param choice The move the user is using.
+     * @return int The damage the move will deal.
+     */
+    private int playerDamage(Move choice) {
+        int d = 0;
+        
+        //gets damage for player's move and returns it.
+        if(choice.getC() == 'P') 
+        {
+            d = cal.damCal(p1.getLevel(), p1.getStat("attack"), p2.getStat("defense"), choice.getPower());
+        }
+        else if(choice.getC() == 'S') 
+        {
+            d = cal.damCal(p1.getLevel(), p1.getStat("special attack"), p2.getStat("special defense"), choice.getPower());
+        }
+        else if(choice.getC() == 'T') 
+        {
+            String stat = choice.getStatToMod();
+            int count = statCount.get(stat);
+			if(count == -6 || count == 6) return -1;
+            int amnt = choice.getAmntToMod();
+            
+            //check for accuracy or evasion stat mods.
+            boolean acc = false;
+            boolean eva = false;
+            if(stat == "accuracy") acc = true;
+            if(stat == "evasion") eva = true;
+            
+            if(amnt >= 0) 
+            {
+                if(!acc && !eva)p1.setStat(stat, cal.statRecal(count, amnt, p1.getStat(stat))); 
+                else if(acc) accc[0]= cal.hitStatRecal(count, amnt, accc[0]);
+                else if(eva) evaa[0] = cal.hitStatRecal(count, amnt, evaa[0]);
+                
+            }
+            else 
+            {
+                if(!acc && !eva)p2.setStat(stat, cal.statRecal(count, amnt, p2.getStat(stat))); 
+                else if(acc) accc[1] = cal.hitStatRecal(count, amnt, accc[1]);
+				else if (eva) evaa[1] = cal.hitStatRecal(count, amnt, evaa[1]);
+            }
+            
+            statCount.put(stat, statCount.get(stat) + amnt);
+        }
+        
+        return d;
+    }
+    
+    /**
+     * This is a carbon copy of playerDamage, just using the values needed to 
+     * calculate the opponents move damage.
+     * 
+     * 
+     * @param foeatk The move the user is using.
+     * @return int The damage the move will deal.
+     */
+    private int foeDamage(Move foeatk) {
+        int d = 0;
+        
+        if(foeatk.getC() == 'P') 
+        {
+            d = cal.damCal(p2.getLevel(), p2.getStat("attack"), p1.getStat("defense"), foeatk.getPower());
+        }
+        else if(foeatk.getC() == 'S') 
+        {
+            d = cal.damCal(p2.getLevel(), p2.getStat("special attack"), p1.getStat("special defense"), foeatk.getPower());
+        }
+        else if(foeatk.getC() == 'T') 
+        {
+            String stat = foeatk.getStatToMod();
+            int count = foeCount.get(stat);
+            int amnt = foeatk.getAmntToMod();
+			
+			//check for acc or eva stat mods.
+			boolean acc = false;
+            boolean eva = false;
+            if(stat == "accuracy") acc = true;
+            if(stat == "evasion") eva = true;
+            
+            if(amnt <= 0) 
+            {
+                if(!acc && !eva) p1.setStat(stat, cal.statRecal(count, amnt, p1.getStat(stat)));
+				else if(acc) accc[1] = cal.hitStatRecal(count, amnt, accc[1]);
+				else if (eva) evaa[1] = cal.hitStatRecal(count, amnt, evaa[1]);
+            }
+            else 
+			{
+				if(!acc && !eva) p2.setStat(stat, cal.statRecal(count, amnt, p2.getStat(stat)));
+				else if(acc) accc[0] = cal.hitStatRecal(count, amnt, accc[0]);
+                else if(eva) evaa[0] = cal.hitStatRecal(count, amnt, evaa[0]);
+			}
+            
+            statCount.put(stat, statCount.get(stat) + amnt);
+        }
+        
+        return d;
+    }
+    
+    /**
+     * This method is called when the 'battle' needs to check if a pokemon has 
+     * fainted. If it is, the battle ending variable finished is set to true.
+     * This is done by checking current HP against 0.
+     * 
+     * @param p The pokemon who is being checked for fainting.
+     */
+    private void faint(Pokemon p) {
+        
+        if(p.getCurrentHP() <= 0) finished = true;
+    }
+    
+    /**
+     * exportPKMNChanges is UNIMPLEMENTED. It's purpose will be to take the 
+     * non instance changes to a pokemon and send them to the trainer's copy
+     * of the pokemon.
+     */
+    private void exportPKMNChanges() {
+        
+        
+    }
+    
+    /** 
+     * A method that gets the PP of a pokemon's move. This is used when the 
+     * move itself has not been accessed. It chains through the pokemon, then 
+     * move objects to get the pp. 
+     * 
+     * @param mon pokemon who has the move.
+     * @param move the number of the move in the pokemon's move array.
+     * @return int the amount of PP in the specified move.
+    */
+    private int PP(int mon, int move) {
+        
+        int ret;
+        if(mon == 0)
+        {
+            ret = p1.getPP(move);
+        }
+        else ret = p2.getPP(move);
+        return ret;
+    }
+    
+    /**
+     * This method is used for commands that are independant of where they are
+     * typed. The input class, when recognizing them, will send -2 back, which
+     * start forwards here. These commands are things like printing
+     * information for the user and the end all quit. 
+     * Commands:
+     * quit
+     * print pokemon info
+     * 
+     * @param i the value returned by the input class, forwarded here by
+     * start.
+     */
+    private boolean genCommands(int i) {
+        
+        switch(i) {
+            case -2:
+                return true;
+            case -3:
+                
+                //prints all pokemon info. First is name and HP.
+                System.out.println("");
+                System.out.println("----------------------------------------");
+                System.out.println(p1.getName() + " lv:" + p1.getLevel() + " " + visualHP(p1.getStat("hp"), p1.getCurrentHP()));
+				
+                System.out.println();
+                
+                System.out.println("HP: " + p1.getCurrentHP() + "/" + p1.getStat("hp"));
+                
+                Move[] moves = p1.getMoves();
+                if(moves[0] != null) 
+                {
+                    System.out.println("1: " + moves[0].getName() + " PP: " + moves[0].getPP());
+                }
+                if(moves[1] != null) 
+                {
+                    System.out.println("2: " + moves[1].getName() + " PP: " + moves[1].getPP());
+                }
+                if(moves[2] != null) 
+                {
+                    System.out.println("3: " + moves[2].getName() + " PP: " + moves[2].getPP());
+                }
+                if(moves[3] != null) 
+                {
+                    System.out.println("4: " + moves[3].getName() + " PP: " + moves[3].getPP());
+                }
+                System.out.println("----------------------------------------");
+                System.out.println("");
+                
+				
+           default:
+               break;
+        }
+        
+        return false;
+    }
+
+    
+    
+    //Accessors
+}
