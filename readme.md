@@ -30,19 +30,19 @@ This are subject to a random urge to work on the project again.
 
 ##Class summaries (In what would be packages)
 *Battle Classes
-	*Battle - Meat and bones. Holds a battle between two pokemon. Poorly written, cause that's alot more complicated than it sounds at first.
-	*Cal - Does some calculations, mostly the nasty long ones.
-	*DamnCal - Does damage calculations.
-	*Move - A variable holder for moves. Doesn't do much.
-	*Input - Does input for moves, user selections, and so on.
-	*preGameBattleGen - Runs a fight between two Eevee's, mostly so I could test it.
+**Battle - Meat and bones. Holds a battle between two pokemon. Poorly written, cause that's alot more complicated than it sounds at first.
+**Cal - Does some calculations, mostly the nasty long ones.
+**DamnCal - Does damage calculations.
+**Move - A variable holder for moves. Doesn't do much.
+**Input - Does input for moves, user selections, and so on.
+**preGameBattleGen - Runs a fight between two Eevee's, mostly so I could test it.
 *Pokemon Classes
-	*Pokedex - A database/file reader class that has methods for accessing the 'pokedex' for making new Pokemon.
-	*Pokemon - Contains a pokemon, with all stats and attributes as required. Best implemented, only missing a few things.
+**Pokedex - A database/file reader class that has methods for accessing the 'pokedex' for making new Pokemon.
+**Pokemon - Contains a pokemon, with all stats and attributes as required. Best implemented, only missing a few things.
 *TextADV Classes
-	*Command - implemented because of the example I was working from. Contains... commands.
-	*Items - roughly a modular class for items found that may be decoration or usable.
-	*Player - Contains the user's information. Most of what would need to be 'saved' is here.
-	*Reader - Reads from text files to add things to the game.
-	*Room - Rooms in the textADV. 
-	*Scanner - Another implementation of Reader.
+**Command - implemented because of the example I was working from. Contains... commands.
+**Items - roughly a modular class for items found that may be decoration or usable.
+**Player - Contains the user's information. Most of what would need to be 'saved' is here.
+**Reader - Reads from text files to add things to the game.
+**Room - Rooms in the textADV. 
+**Scanner - Another implementation of Reader.
