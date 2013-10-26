@@ -30,8 +30,8 @@ This are subject to a random urge to work on the project again.
 
 ##Class summaries (In what would be packages)
 * Battle Classes
-** Battle - Meat and bones. Holds a battle between two pokemon. Poorly written, cause that's alot more complicated than it sounds at first.
-** Cal - Does some calculations, mostly the nasty long ones.
+	** Battle - Meat and bones. Holds a battle between two pokemon. Poorly written, cause that's alot more complicated than it sounds at first.
+	* Cal - Does some calculations, mostly the nasty long ones.
 ** DamnCal - Does damage calculations.
 ** Move - A variable holder for moves. Doesn't do much.
 ** Input - Does input for moves, user selections, and so on.
